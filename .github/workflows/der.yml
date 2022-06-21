@@ -30,7 +30,6 @@ jobs:
           - wasm32-unknown-unknown
     steps:
       - uses: actions/checkout@v2
-      - uses: RustCrypto/actions/cargo-cache@master
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -78,7 +77,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v2
-      - uses: RustCrypto/actions/cargo-cache@master
+
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
@@ -98,7 +97,6 @@ jobs:
           - stable
     steps:
       - uses: actions/checkout@v2
-      - uses: RustCrypto/actions/cargo-cache@master
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
