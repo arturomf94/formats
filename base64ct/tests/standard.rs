@@ -129,4 +129,20 @@ mod unpadded {
             Err(Error::InvalidEncoding)
         );
     }
+
+    #[test]
+    fn reject_invalid_symbol() {
+        let input = "Mi";
+        let mut buf = [0u8; 1024];
+        assert_eq!(
+            Base64Unpadded::decode(input, &mut buf),
+            Err(Error::InvalidEncoding)
+        );
+        let input2 = "ppwthHXW8kXD0f9fE7UPYsOAAu4uj5ORwSomCMxaaaa";
+        let mut buf = [0u8; 1024];
+        assert_eq!(
+            Base64Unpadded::decode(input2, &mut buf),
+            Err(Error::InvalidEncoding)
+        );
+    }
 }

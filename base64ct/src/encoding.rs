@@ -301,11 +301,25 @@ pub(crate) fn decode_padding(input: &[u8]) -> Result<(usize, i16), InvalidEncodi
 /// Check that the padding of a Base64 encoding string is valid given
 /// the decoded buffer.
 fn validate_padding<T: Alphabet>(encoded: &[u8], decoded: &[u8]) -> Result<(), Error> {
-    if !T::PADDED || (encoded.is_empty() && decoded.is_empty()) {
+    if encoded.is_empty() && decoded.is_empty() {
         return Ok(());
     }
 
-    let padding_start = encoded.len().checked_sub(4).ok_or(Error::InvalidEncoding)?;
+    let padding_start: usize;
+    if !T::PADDED {
+        padding_start = if encoded.len() % 4 != 0 {
+            encoded
+                .len()
+                .checked_sub(encoded.len() % 4)
+                .ok_or(Error::InvalidEncoding)?
+        } else if encoded.len() == 4 {
+            0
+        } else {
+            encoded.len().checked_sub(4).ok_or(Error::InvalidEncoding)?
+        };
+    } else {
+        padding_start = encoded.len().checked_sub(4).ok_or(Error::InvalidEncoding)?;
+    }
     let padding = encoded.get(padding_start..).ok_or(Error::InvalidEncoding)?;
 
     let decoded_start = if decoded.len() % 3 != 0 {
